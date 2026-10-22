@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#101b34" />
+  <meta name="description" content="An interactive, self-paced laboratory for A.2 Mathematical Foundations in Computational Morphology." />
+  <title>A.2 Mathematical Playground | Computational Morphology</title>
+  <style>
+    :root { color-scheme: light; --navy:#14223a; --deep:#0f1a2f; --ink:#172741; --muted:#5c6e84; --line:#dce5ed; --paper:#fff; --canvas:#f4f7fb; --blue:#2b7cbf; --blue-light:#eaf4fc; --purple:#8759af; --purple-light:#f4edfa; --gold:#bc7c20; --gold-light:#fff4df; --green:#236d53; --green-light:#e9f7ef; --red:#9d463b; --red-light:#fff1ef; --shadow:0 12px 36px rgba(27,46,77,.075); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--canvas); font-family:Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height:1.55; }
+    button,input,select { font:inherit; }
+    button { cursor:pointer; }
+    a { color:#145b95; }
+    a:hover { text-decoration-thickness:2px; }
+    :focus-visible { outline:3px solid #f0a846; outline-offset:3px; }
+    .skip { position:absolute; left:-500px; top:10px; z-index:20; color:#000; background:#fff; padding:8px 14px; }
+    .skip:focus { left:10px; }
+    .container { max-width:1150px; margin:auto; padding-left:24px; padding-right:24px; }
+    header { background:var(--deep); color:#fff; }
+    .topbar { min-height:76px; display:flex; justify-content:space-between; align-items:center; gap:18px; border-bottom:1px solid rgba(255,255,255,.13); }
+    .brand { display:flex; align-items:center; gap:11px; text-decoration:none; color:#fff; }
+    .brand-mark { display:grid; place-items:center; background:linear-gradient(135deg,#74c7d6,#d7d2a8); color:#11243a; width:38px; height:38px; border-radius:11px; font-weight:900; font-size:15px; }
+    .brand .name { font-size:13px; font-weight:750; letter-spacing:.035em; }
+    .brand .sub { color:#a9bed4; font-size:11px; display:block; font-weight:500; letter-spacing:.03em; }
+    .toplinks { display:flex; flex-wrap:wrap; gap:22px; }
+    .toplinks a { color:#d7e5f2; text-decoration:none; font-size:13px; font-weight:600; }
+    .toplinks a:hover { color:#fff; }
+    .hero { padding-top:66px; padding-bottom:67px; display:grid; grid-template-columns: minmax(0,1fr) 330px; align-items:center; gap:55px; }
+    .eyebrow { color:#8ed2dd; font-weight:750; letter-spacing:.15em; text-transform:uppercase; font-size:11px; }
+    h1 { font-size:clamp(38px,5vw,64px); line-height:1.07; letter-spacing:-.043em; max-width:660px; margin:14px 0 22px; }
+    .hero p { max-width:600px; color:#c0d0df; font-size:17px; margin:0 0 24px; }
+    .hero-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:29px; }
+    .btn { appearance:none; display:inline-flex; justify-content:center; align-items:center; gap:8px; border:1px solid var(--line); border-radius:10px; padding:11px 16px; font-weight:750; font-size:13px; color:var(--ink); background:#fff; text-decoration:none; transition:transform .15s,border-color .15s,background .15s; }
+    .btn:hover { transform:translateY(-1px); border-color:#a0b1c1; }
+    .btn-primary { background:#78c8d8; border-color:#78c8d8; color:#0c2a42; }
+    .btn-primary:hover { background:#9edce5; border-color:#9edce5; }
+    .btn-outline { background:transparent; border-color:#597089; color:#e5eff9; }
+    .btn-small { padding:8px 11px; }
+    .hero-art { min-width:0; border:1px solid rgba(255,255,255,.16); border-radius:19px; padding:23px 19px 15px; background:linear-gradient(125deg,#203c59 0%,#14233c 80%); box-shadow:0 25px 65px #09132560; }
+    .hero-art .art-label { color:#c5d8e5; display:flex; justify-content:space-between; font-size:11px; letter-spacing:.06em; margin-bottom:8px; }
+    .hero-art svg { width:100%; height:auto; }
+    .hero-art .art-bottom { font-size:12px; color:#a7c0d0; text-align:center; }
+    .progress-strip { background:#fff; border-bottom:1px solid var(--line); }
+    .progress-content { display:flex; align-items:center; gap:22px; padding-top:15px; padding-bottom:15px; }
+    .progress-title { font-size:13px; font-weight:760; white-space:nowrap; }
+    .meter { flex:1; min-width:50px; height:10px; background:#e8edf2; overflow:hidden; border-radius:999px; }
+    .meter > div { height:100%; width:0%; background:linear-gradient(90deg,#67bccc,#3577a9); transition:width .2s; }
+    .progress-value { color:var(--muted); font-size:12px; white-space:nowrap; }
+    main { padding-top:49px; padding-bottom:80px; }
+    .intro-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin:23px 0 46px; }
+    .overview-card { background:white; box-shadow:var(--shadow); border:1px solid var(--line); border-radius:14px; padding:20px 21px; min-width:0; }
+    .overview-card .num { display:inline-flex; width:32px; height:32px; align-items:center; justify-content:center; border-radius:9px; font-size:13px; font-weight:900; margin-bottom:10px; }
+    .overview-card:nth-child(1) .num { color:#155b8b; background:#e7f3fc; }
+    .overview-card:nth-child(2) .num { color:#a46616; background:#fff2da; }
+    .overview-card:nth-child(3) .num { color:#78509a; background:#f3eafb; }
+    .overview-card h3 { font-size:15px; margin:2px 0 5px; line-height:1.3; }
+    .overview-card p { margin:0; font-size:13px; color:var(--muted); }
+    .kicker { color:#427794; letter-spacing:.14em; font-size:11px; font-weight:850; text-transform:uppercase; }
+    .section-lead { max-width:720px; margin:7px 0 0; color:var(--muted); font-size:14px; }
+    h2 { font-size:clamp(25px,3vw,34px); letter-spacing:-.03em; line-height:1.2; margin:6px 0 0; }
+    h3 { font-size:17px; letter-spacing:-.01em; }
+    .exp { scroll-margin-top:25px; padding-top:34px; margin-top:18px; }
+    .exp-header { display:flex; justify-content:space-between; gap:20px; align-items:end; margin-bottom:22px; }
+    .exp-header p { color:var(--muted); max-width:680px; font-size:14px; margin:9px 0 0; }
+    .duration { flex-shrink:0; white-space:nowrap; background:#e6edf4; color:#3c5b72; font-size:11px; font-weight:750; padding:6px 10px; border-radius:999px; }
+    .workspace { display:grid; grid-template-columns:320px minmax(0,1fr); align-items:stretch; gap:18px; }
+    .panel { background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); min-width:0; }
+    .controls { padding:25px 23px; }
+    .controls h3,.viz h3 { margin:0 0 8px; }
+    .controls .context { margin:0 0 22px; color:var(--muted); font-size:13px; }
+    .formula { border:1px solid #e1e7ef; background:#f6f8fa; text-align:center; font-size:23px; padding:17px 10px; border-radius:12px; font-family:Georgia, "Times New Roman", serif; margin:17px 0 20px; }
+    .control { padding-bottom:20px; margin-bottom:17px; border-bottom:1px solid #e9edf1; }
+    .control:last-of-type { margin-bottom:14px; }
+    .control .control-top { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:10px; }
+    .control label { font-size:13px; font-weight:760; }
+    output { color:#1c5e91; font-weight:800; font-size:14px; font-variant-numeric:tabular-nums; }
+    input[type=range] { width:100%; accent-color:#2a7dad; cursor:ew-resize; height:23px; }
+    .range-ends { display:flex; justify-content:space-between; color:#7a8998; font-size:10px; }
+    .selectlabel { display:block; font-size:13px; font-weight:760; margin-bottom:8px; }
+    select { width:100%; border:1px solid #bdcbd7; padding:9px 11px; border-radius:8px; background:#fff; color:var(--ink); }
+    .mini-hint { color:var(--muted); font-size:12px; background:#f3f7fa; border-radius:9px; padding:12px 13px; margin-top:17px; }
+    .viz { padding:22px 26px 22px; }
+    .vizhead { display:flex; gap:12px; align-items:flex-start; justify-content:space-between; }
+    .viz h3 { margin:1px 0 1px; }
+    .viz small { color:var(--muted); font-size:12px; }
+    .plot { margin-top:17px; display:block; width:100%; aspect-ratio:700/315; height:auto; overflow:visible; }
+    .legend { display:flex; flex-wrap:wrap; gap:15px; margin-top:9px; color:var(--muted); font-size:11px; }
+    .key { display:inline-block; width:16px; height:3px; border-radius:2px; vertical-align:middle; margin-right:6px; }
+    .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-top:20px; }
+    .metric { border:1px solid var(--line); border-radius:10px; padding:11px 12px; }
+    .metric .label { color:var(--muted); display:block; font-size:11px; }
+    .metric .value { font-size:18px; font-weight:850; letter-spacing:-.035em; font-variant-numeric:tabular-nums; display:block; margin-top:3px; }
+    .insight { display:flex; gap:10px; align-items:flex-start; background:#eff6fa; color:#2a506b; padding:14px 16px; border-radius:10px; margin-top:16px; font-size:13px; }
+    .insight b { color:#255e82; }
+    .toggle { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:680; color:#536378; white-space:nowrap; }
+    .toggle input { width:16px; height:16px; accent-color:var(--blue); }
+    .question-panel { background:white; border:1px solid var(--line); border-radius:15px; margin-top:14px; padding:22px 26px; box-shadow:var(--shadow); }
+    .question-title { display:flex; align-items:center; gap:12px; justify-content:space-between; margin-bottom:8px; }
+    .question-title h3 { margin:0; font-size:16px; }
+    .tiny-tag { font-size:10px; font-weight:800; letter-spacing:.08em; background:#edf3f7; padding:5px 9px; border-radius:6px; color:#52718c; text-transform:uppercase; }
+    .question-note { margin:0 0 15px; font-size:12px; color:var(--muted); }
+    .question { padding:15px 0; border-top:1px solid #edf0f2; }
+    .question:first-of-type { border-top:0; }
+    .question fieldset { border:0; padding:0; margin:0; }
+    .question legend { font-weight:750; font-size:13px; padding:0; margin-bottom:10px; width:100%; }
+    .choices { display:grid; gap:8px; }
+    .choice { display:flex; gap:9px; align-items:flex-start; border:1px solid #dce5ed; border-radius:9px; padding:9px 11px; font-size:13px; cursor:pointer; }
+    .choice:hover { border-color:#a2bbcc; background:#f8fbfc; }
+    .choice input { margin-top:3px; accent-color:#2475ad; }
+    .question-actions { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-top:12px; gap:10px; }
+    .feedback { min-height:21px; font-size:12px; font-weight:680; }
+    .feedback.correct { color:var(--green); }
+    .feedback.incorrect { color:var(--red); }
+    .feedback.warn { color:#915d18; }
+    .note { border-left:4px solid #6faac0; background:#f4fafc; padding:13px 16px; color:#3a5367; margin-top:15px; font-size:13px; }
+    .ribbon { display:inline-block; background:var(--green-light); color:var(--green); border:1px solid #bce7d2; padding:5px 9px; font-weight:800; font-size:11px; border-radius:999px; }
+    .heatgrid { display:grid; grid-template-columns:repeat(12,1fr); gap:2px; border-radius:8px; overflow:hidden; margin:16px 0 8px; background:#dce3ed; padding:2px; }
+    .heatcell { aspect-ratio:1.2; }
+    .heatrow { margin-top:11px; }
+    .heatlabels { display:flex; justify-content:space-between; font-size:11px; color:#728092; }
+    .small-controls { margin-top:16px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; }
+    .small-controls .inline { display:flex; align-items:center; gap:8px; font-size:12px; }
+    .small-controls select { width:auto; min-width:65px; padding:5px 8px; font-size:12px; }
+    .pixel { font-size:12px; background:#f0f4f7; border-radius:8px; padding:8px 11px; }
+    .finisher { margin-top:55px; border-radius:20px; background:#15253d; color:#fff; padding:35px 40px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:24px; }
+    .finisher h2 { color:#fff; margin-bottom:8px; }
+    .finisher p { color:#bbcbdc; font-size:14px; max-width:630px; }
+    .finisher .badge { font-size:12px; color:#b0e1e9; font-weight:750; }
+    .finisher .actions { display:flex; flex-direction:column; gap:9px; }
+    footer { border-top:1px solid var(--line); padding:28px 24px 36px; color:#6f7d8c; font-size:12px; background:white; }
+    footer .foot { display:flex; align-items:center; justify-content:space-between; gap:15px; flex-wrap:wrap; max-width:1102px; margin:auto; }
+    .sr-only { position:absolute; height:1px; width:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    .section-divider { height:1px; background:linear-gradient(90deg,#ccd7e4,transparent); margin-top:28px; }
+    @media (max-width:940px) { .hero { grid-template-columns:1fr; gap:24px; } .hero-art { max-width:420px; } .workspace { grid-template-columns:1fr; } .controls { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 20px; } .controls h3, .controls .context, .controls .formula, .controls .mini-hint { grid-column:1/-1; } .controls .formula { max-width:440px; } }
+    @media (max-width:650px) { .container { padding-left:16px; padding-right:16px; } .topbar { flex-wrap:wrap; padding-top:14px; padding-bottom:12px; } .toplinks { gap:13px; } .hero { padding-top:42px; padding-bottom:46px; } .hero p { font-size:15px; } .intro-grid { grid-template-columns:1fr; gap:10px; } .overview-card { padding:16px; } .exp-header { align-items:start; } .duration { display:none; } .controls { display:block; padding:20px; } .viz { padding:20px 14px; } .plot { aspect-ratio:1.5; } .metrics { grid-template-columns:1fr 1fr; } .metric:last-child:nth-child(odd) { grid-column:1/-1; } .question-panel { padding:20px 16px; } .finisher { grid-template-columns:1fr; padding:27px; } .finisher .actions { flex-direction:row; flex-wrap:wrap; } .progress-content { gap:10px; } .progress-title { font-size:11px; } .progress-value { font-size:10px; } }
+    @media print { header { color:#000; background:#fff; } .hero-art,.btn,.progress-strip,.controls,.question-panel,.finisher .actions { display:none!important; } .hero { padding:16px 0; } .hero p { color:#222; } body { background:white; } .workspace,.intro-grid { display:block; } .panel { margin-bottom:12px; box-shadow:none; } .exp { break-before:page; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .btn,.meter>div { transition:none!important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to interactive experiments</a>
+  <header>
+    <div class="topbar container">
+      <a class="brand" href="#top" aria-label="Computational Morphology, back to top">
+        <span class="brand-mark" aria-hidden="true">CM</span><span class="name">COMPUTATIONAL MORPHOLOGY<span class="sub">MODULE A · CHAPTER A.2</span></span>
+      </a>
+      <nav class="toplinks" aria-label="Page navigation"><a href="#overview">Overview</a><a href="#experiment-1">Functions</a><a href="#experiment-2">Growth</a><a href="#experiment-3">Space</a></nav>
+    </div>
+    <div id="top" class="hero container">
+      <div>
+        <div class="eyebrow">A.2 · Mathematical Foundations · Interactive lab</div>
+        <h1>The Mathematical<br />Playground<span style="color:#8fcbda">.</span></h1>
+        <p>What happens when you change a number in an equation? Move the controls, watch the graphs respond, and connect the mathematics to biological phenomena.</p>
+        <div class="hero-actions"><a class="btn btn-primary" href="#experiment-1">Start exploring <span aria-hidden="true">↗</span></a><a class="btn btn-outline" href="#overview">How it works</a></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-label"><span>MATHEMATICS IN MOTION</span><span>01 / 03</span></div>
+        <svg viewBox="0 0 310 220" role="presentation"><defs><linearGradient id="heroFill" x1="0" x2="1" y1="1" y2="0"><stop stop-color="#2b84c1" stop-opacity="0"/><stop offset="1" stop-color="#78d3cf" stop-opacity=".27"/></linearGradient></defs><g stroke="#4d6981" stroke-opacity=".38" stroke-width="1"><path d="M18 30H295M18 70H295M18 110H295M18 150H295M18 190H295M54 15V204M108 15V204M162 15V204M216 15V204M270 15V204"/></g><path d="M24 190 C75 185 125 181 168 159 S250 94 288 30 L288 190 Z" fill="url(#heroFill)"/><path d="M24 190 C75 185 125 181 168 159 S250 94 288 30" fill="none" stroke="#93d9dc" stroke-width="4" stroke-linecap="round"/><g fill="#ffdba0"><circle cx="54" cy="188" r="4"/><circle cx="168" cy="159" r="4"/><circle cx="252" cy="91" r="4"/></g><path d="M24 190H295M24 190V15" fill="none" stroke="#b4c8d4" stroke-width="1.7"/></svg>
+        <div class="art-bottom">Move a parameter. See a new possibility.</div>
+      </div>
+    </div>
+  </header>
+  <div class="progress-strip"><div class="container progress-content"><span class="progress-title">Your explorations</span><div class="meter" role="progressbar" aria-label="Laboratory completion" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0" id="progress-meter"><div id="progress-fill"></div></div><span id="progress-text" class="progress-value">0 of 6 checks complete</span></div></div>
+  <main id="main" class="container">
+    <section id="overview" aria-labelledby="overview-heading">
+      <span class="kicker">A guided discovery lab</span><h2 id="overview-heading">Three experiments. One mathematical language.</h2>
+      <p class="section-lead">No programming and no manual grading. Each experiment contains movable parameters and two instant-feedback questions. Explore freely; you can retry the questions as often as you wish.</p>
+      <div class="intro-grid">
+        <div class="overview-card"><span class="num">01</span><h3>Functions &amp; graphs</h3><p>Change slopes, intercepts, and function families. Understand what parameters do.</p></div>
+        <div class="overview-card"><span class="num">02</span><h3>Growth &amp; decay</h3><p>Explore exponential curves, doubling time, and logarithmic plots.</p></div>
+        <div class="overview-card"><span class="num">03</span><h3>Space &amp; images</h3><p>Connect concentration profiles, length scales, and numerical image matrices.</p></div>
+      </div>
+    </section>
+    <section class="exp" id="experiment-1" aria-labelledby="e1-heading">
+      <div class="exp-header"><div><span class="kicker">Experiment 01 · Mathematical relationships</span><h2 id="e1-heading">Give a graph a new shape.</h2><p>Imagine translating a simple measurement into mathematics. What does it mean to change the input <i>x</i>, compared with changing a parameter such as <i>a</i> or <i>b</i>?</p></div><span class="duration">~8 min</span></div>
+      <div class="workspace">
+        <div class="panel controls">
+          <h3>Change the equation</h3><p class="context">The lines and curves are dimensionless mathematical examples. Values below zero can occur in the graph even where they would be unsuitable for a biological measurement.</p>
+          <div class="formula" id="linear-formula" aria-live="polite">y = 1.0x + 0.0</div>
+          <div class="control"><label class="selectlabel" for="function-type">Function family</label><select id="function-type"><option value="linear">Straight line · y = ax + b</option><option value="quadratic">Curved relationship · y = ax² + b</option></select></div>
+          <div class="control"><div class="control-top"><label for="a-slider">Coefficient <i>a</i></label><output id="a-value" for="a-slider">1.0</output></div><input id="a-slider" type="range" min="-2" max="2" step="0.25" value="1" /><div class="range-ends"><span>−2</span><span>+2</span></div></div>
+          <div class="control"><div class="control-top"><label for="b-slider">Coefficient <i>b</i></label><output id="b-value" for="b-slider">0.0</output></div><input id="b-slider" type="range" min="-3" max="3" step="0.25" value="0" /><div class="range-ends"><span>−3</span><span>+3</span></div></div>
+          <button class="btn btn-small" id="reset-e1" type="button">↺ Reset controls</button>
+          <p class="mini-hint">Try it: change <i>b</i> without changing <i>a</i>. Then change <i>a</i> from positive to negative. Finally, switch to a curved function.</p>
+        </div>
+        <div class="panel viz">
+          <div class="vizhead"><div><h3>Live graph</h3><small>One equation → many possible graphs</small></div><span class="tiny-tag">Interactive</span></div>
+          <svg class="plot" id="linear-plot" role="img" aria-label="Interactive function graph with horizontal x-axis and vertical y-axis"></svg>
+          <div class="legend"><span><span class="key" style="background:var(--blue)"></span>Current function</span><span><span class="key" style="background:#b0c2d0"></span>Axes and grid</span></div>
+          <div class="metrics"><div class="metric"><span class="label">Value at x = 0</span><span class="value" id="linear-y0">0.00</span></div><div class="metric"><span class="label">Value at x = 2</span><span class="value" id="linear-y2">2.00</span></div><div class="metric"><span class="label">Function family</span><span class="value" id="linear-kind" style="font-size:14px">Linear</span></div></div>
+          <div class="insight"><span aria-hidden="true">✦</span><div id="linear-insight">Changing <b>a</b> changes the slope. Changing <b>b</b> moves the line up or down.</div></div>
+        </div>
+      </div>
+      <div class="question-panel" id="qbox1"><div class="question-title"><h3>Check your intuition</h3><span class="tiny-tag">2 quick questions</span></div><p class="question-note">These are self-checks, not graded submissions. A correct answer unlocks a check in your personal progress bar.</p><div class="quiz-container" data-exp="1"></div></div>
+    </section>
+    <div class="section-divider"></div>
+    <section class="exp" id="experiment-2" aria-labelledby="e2-heading">
+      <div class="exp-header"><div><span class="kicker">Experiment 02 · Biological change</span><h2 id="e2-heading">Grow it. Shrink it. Rescale it.</h2><p>A simplified population of cells changes exponentially. Can you tell the difference between the starting number of cells and the rate at which their population changes?</p></div><span class="duration">~10 min</span></div>
+      <div class="workspace">
+        <div class="panel controls">
+          <h3>Change the model</h3><p class="context">This is an idealized model with a constant proportional growth or decay rate—not a complete biological description.</p>
+          <div class="formula">N(t) = N₀ e<sup>rt</sup></div>
+          <div class="control"><div class="control-top"><label for="n0-slider">Starting cells, N₀</label><output id="n0-value" for="n0-slider">100</output></div><input id="n0-slider" type="range" min="50" max="250" step="25" value="100" /><div class="range-ends"><span>50 cells</span><span>250 cells</span></div></div>
+          <div class="control"><div class="control-top"><label for="r-slider">Rate <i>r</i> (day⁻¹)</label><output id="r-value" for="r-slider">+0.20</output></div><input id="r-slider" type="range" min="-0.3" max="0.35" step="0.05" value="0.20" /><div class="range-ends"><span>−0.30</span><span>+0.35</span></div></div>
+          <div class="control"><label class="toggle" for="log-scale"><input id="log-scale" type="checkbox" /> Show log₁₀ vertical scale</label><p style="font-size:12px;color:var(--muted);margin:7px 0 0">Both axes display predicted cell counts and time, but the vertical spacing changes.</p></div>
+          <button class="btn btn-small" id="reset-e2" type="button">↺ Reset controls</button>
+          <p class="mini-hint">Try it: drag <i>r</i> below zero. Then set <i>r</i> to zero. On a logarithmic vertical scale, notice the shape of an exponential curve.</p>
+        </div>
+        <div class="panel viz">
+          <div class="vizhead"><div><h3>Population over time</h3><small id="growth-axis-note">Cell population · linear vertical axis</small></div><span class="tiny-tag">10 days</span></div>
+          <svg class="plot" id="growth-plot" role="img" aria-label="Interactive graph of population versus time"></svg>
+          <div class="legend"><span><span class="key" style="background:var(--gold)"></span>Current model</span><span><span class="key" style="background:#aabecb"></span>Reference: N₀ = 100, r = 0.20 day⁻¹</span></div>
+          <div class="metrics"><div class="metric"><span class="label">Population at day 10</span><span class="value" id="growth-n10">739</span></div><div class="metric"><span class="label">Doubling / half-life</span><span class="value" id="growth-time">3.47 d</span></div><div class="metric"><span class="label">Behavior</span><span class="value" id="growth-state" style="font-size:14px">Growth</span></div><div class="metric"><span class="label">Rate of change at day 5</span><span class="value" id="growth-derivative" style="font-size:15px">+54.4 cells/d</span></div></div>
+          <div class="insight"><span aria-hidden="true">✦</span><div id="growth-insight">For a positive <b>r</b>, the population grows exponentially. The constant <b>r</b> has units of inverse time.</div></div>
+        </div>
+      </div>
+      <div class="question-panel" id="qbox2"><div class="question-title"><h3>Check your intuition</h3><span class="tiny-tag">2 quick questions</span></div><p class="question-note">Try predicting the result before moving the sliders.</p><div class="quiz-container" data-exp="2"></div></div>
+    </section>
+    <div class="section-divider"></div>
+    <section class="exp" id="experiment-3" aria-labelledby="e3-heading">
+      <div class="exp-header"><div><span class="kicker">Experiment 03 · Spatial representation</span><h2 id="e3-heading">Turn an equation into an image.</h2><p>Now the independent variable is position, not time. A concentration profile across a hypothetical tissue becomes a curve—and then a grid of numerical image intensities.</p></div><span class="duration">~10 min</span></div>
+      <div class="workspace">
+        <div class="panel controls">
+          <h3>Explore a spatial gradient</h3><p class="context">The profile is prescribed for illustration; we are not yet modelling diffusion or explaining how the gradient forms.</p>
+          <div class="formula">c(x) = c₀ e<sup>−x/ℓ</sup></div>
+          <div class="control"><div class="control-top"><label for="c0-slider">Concentration at x = 0, c₀</label><output id="c0-value" for="c0-slider">100</output></div><input id="c0-slider" type="range" min="40" max="100" step="10" value="100" /><div class="range-ends"><span>40 a.u.</span><span>100 a.u.</span></div></div>
+          <div class="control"><div class="control-top"><label for="ell-slider">Characteristic length, ℓ</label><output id="ell-value" for="ell-slider">2.0 mm</output></div><input id="ell-slider" type="range" min="0.5" max="5" step="0.5" value="2" /><div class="range-ends"><span>0.5 mm</span><span>5.0 mm</span></div></div>
+          <button class="btn btn-small" id="reset-e3" type="button">↺ Reset controls</button>
+          <p class="mini-hint">Try it: keep c₀ fixed and increase ℓ. Does the profile drop more rapidly or more slowly? Watch the heatmap change at the same time.</p>
+        </div>
+        <div class="panel viz">
+          <div class="vizhead"><div><h3>From profile to pixel matrix</h3><small>Horizontal position: x = 0–10 mm</small></div><span class="tiny-tag">Synthetic tissue</span></div>
+          <svg class="plot" id="spatial-plot" role="img" aria-label="Concentration profile versus position"></svg>
+          <div class="heatrow"><div class="heatlabels"><span>HIGHER concentration</span><span>LOWER concentration</span></div><div class="heatgrid" id="heatgrid" role="img" aria-label="An eight-row by twelve-column synthetic heatmap representing concentration across tissue"></div><div class="heatlabels"><span>x = 0 mm</span><span>x = 10 mm</span></div></div>
+          <div class="small-controls"><label class="inline" for="pixel-row">Inspect row <select id="pixel-row"></select></label><label class="inline" for="pixel-col">column <select id="pixel-col"></select></label><span class="pixel" id="pixel-value">Pixel = —</span></div>
+          <div class="metrics"><div class="metric"><span class="label">Concentration at x = 0</span><span class="value" id="spatial-start">100</span></div><div class="metric"><span class="label">At x = 5 mm</span><span class="value" id="spatial-mid">8.2</span></div><div class="metric"><span class="label">At x = 10 mm</span><span class="value" id="spatial-end">0.67</span></div></div>
+          <div class="insight"><span aria-hidden="true">✦</span><div id="spatial-insight">The same exponential shape can describe variation in <b>space</b> instead of time. ℓ is a length scale, not a time constant.</div></div>
+        </div>
+      </div>
+      <div class="question-panel" id="qbox3"><div class="question-title"><h3>Check your intuition</h3><span class="tiny-tag">2 quick questions</span></div><p class="question-note">The image shown above is calculated, not collected from a microscope.</p><div class="quiz-container" data-exp="3"></div></div>
+      <div class="note"><strong>Important scientific distinction:</strong> A mathematically plausible curve or image is not automatically a biological explanation. The models in this lab are simplified visual examples. Later chapters address how dynamical rules and biological mechanisms generate change and spatial patterns.</div>
+    </section>
+    <section class="finisher" aria-labelledby="finish-heading"><div><span class="badge">EXPLORATION COMPLETE?</span><h2 id="finish-heading">What changed when you changed the model?</h2><p>You have explored functions, time-dependent growth, and spatial profiles—the foundations you will use later for dynamics, simulation, and morphogenesis. Your self-check answers are saved only in this browser, when local storage is available.</p><div id="final-state" aria-live="polite" class="badge" style="margin-top:5px">0/6 self-checks complete</div></div><div class="actions"><button id="print-page" class="btn btn-primary" type="button">Print key graphs ↗</button><button id="reset-progress" class="btn btn-outline" type="button">Reset progress</button></div></section>
+  </main>
+  <footer><div class="foot"><span>Computational Morphology · A.2 Mathematical Foundations</span><span>Self-paced teaching resource · No account, analytics, or remote submission</span></div></footer>
+  <script>
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const storageKey = 'cm-a2-playground-v1';
+    let mastered = {};
+    try { mastered = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch (_) { mastered = {}; }
+    const checks = [
+      {id:'1a', exp:1, prompt:'For y = ax + b, what happens when b increases while a stays fixed?', choices:['The whole line moves upward without changing slope.','The line becomes more curved.','The slope becomes steeper.'], correct:0, why:'b is the vertical intercept: increasing it translates the entire line upward.'},
+      {id:'1b', exp:1, prompt:'Which statement correctly distinguishes a variable from a parameter?', choices:['A parameter changes at every point along the x-axis.','x is the input that varies along a graph; a and b can be fixed for one plotted curve.','Variables and parameters must have different units.'], correct:1, why:'On a chosen curve, x varies over the domain while coefficients a and b are held fixed. Adjusting a parameter creates a new curve.'},
+      {id:'2a', exp:2, prompt:'When r changes from positive to negative in N(t) = N₀eʳᵗ, what happens?', choices:['The initial population becomes negative.','The exponential model changes from growth to decay.','The population is immediately zero.'], correct:1, why:'The exponential factor e^(rt) stays positive. Negative r means a decreasing population; N(0) = N₀ remains unchanged.'},
+      {id:'2b', exp:2, prompt:'With a constant r, an exponential curve on a logarithmic vertical axis appears as:', choices:['A straight line (when log N is plotted against time).','A circle.','A parabola for every r.'], correct:0, why:'Taking logs gives log₁₀ N(t) = log₁₀ N₀ + (r/ln 10)t, a linear relationship.'},
+      {id:'3a', exp:3, prompt:'With c₀ unchanged, increasing ℓ in c(x) = c₀e^(−x/ℓ) makes the profile:', choices:['Fall more slowly across space.','Fall more steeply across space.','Turn into an oscillating function.'], correct:0, why:'A larger characteristic length means it takes a greater distance for the concentration to fall by the same factor.'},
+      {id:'3b', exp:3, prompt:'What does one entry Iᵢⱼ in a numerical image matrix represent?', choices:['The entire tissue mechanism.','The spatial derivative of every pixel.','A numerical intensity at row i and column j.'], correct:2, why:'A matrix organizes sampled intensity values by row and column. Pixel values alone do not establish a causal biological mechanism.'}
+    ];
+    const NS='http://www.w3.org/2000/svg';
+    const fmt=(n,d=2)=>Number(n).toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:d});
+    const isAlmostZero = n => Math.abs(n)<1e-10;
+    function store(){ try{localStorage.setItem(storageKey,JSON.stringify(mastered));}catch(_){} }
+    function updateProgress(){
+      const count=checks.filter(q=>mastered[q.id]).length;
+      $('progress-fill').style.width=`${count/6*100}%`;
+      $('progress-meter').setAttribute('aria-valuenow',String(count));
+      $('progress-text').textContent=`${count} of 6 checks complete`;
+      $('final-state').textContent=count===6?'✓ All six self-checks completed':`${count}/6 self-checks complete`;
+    }
+    function renderQuizzes(){
+      document.querySelectorAll('.quiz-container').forEach(box=>{
+        const exp=Number(box.dataset.exp);
+        box.textContent='';
+        checks.filter(q=>q.exp===exp).forEach((q,index)=>{
+          const section=document.createElement('div');section.className='question';
+          const fieldset=document.createElement('fieldset');
+          const legend=document.createElement('legend');legend.textContent=`${index+1}. ${q.prompt}`;fieldset.appendChild(legend);
+          const choices=document.createElement('div');choices.className='choices';
+          q.choices.forEach((answer,i)=>{
+            const label=document.createElement('label');label.className='choice';
+            const input=document.createElement('input');input.type='radio';input.name=`question-${q.id}`;input.value=String(i);input.disabled=!!mastered[q.id];
+            if(mastered[q.id]&&i===q.correct)input.checked=true;
+            const span=document.createElement('span');span.textContent=answer;label.append(input,span);choices.append(label);
+          });fieldset.appendChild(choices);
+          const actions=document.createElement('div');actions.className='question-actions';
+          const feedback=document.createElement('div');feedback.className='feedback';feedback.id=`feedback-${q.id}`;feedback.setAttribute('aria-live','polite');
+          const button=document.createElement('button');button.className='btn btn-small';button.type='button';button.textContent=mastered[q.id]?'✓ Completed':'Check answer';button.disabled=!!mastered[q.id];
+          if(mastered[q.id]){ feedback.textContent=`Correct. ${q.why}`; feedback.classList.add('correct'); }
+          button.addEventListener('click',()=>{
+            const checked=section.querySelector(`input[name="question-${q.id}"]:checked`);
+            feedback.className='feedback';
+            if(!checked){feedback.textContent='Choose an answer first.';feedback.classList.add('warn');return;}
+            if(Number(checked.value)===q.correct){mastered[q.id]=true;store();button.disabled=true;button.textContent='✓ Completed';section.querySelectorAll('input').forEach(x=>x.disabled=true);feedback.classList.add('correct');feedback.textContent=`Correct. ${q.why}`;updateProgress();}
+            else {feedback.textContent='Not quite. Try moving the controls and choosing again.';feedback.classList.add('incorrect');}
+          });
+          actions.append(feedback,button);section.append(fieldset,actions);box.appendChild(section);
+        });
+      });updateProgress();
+    }
+    function svgLineChart(svgId,{xMin,xMax,yMin,yMax,xTicks,yTicks,curves,xLabel,yLabel,caption}) {
+      const svg=$(svgId);const W=700,H=315;const m={l:70,r:22,t:18,b:51};const pw=W-m.l-m.r,ph=H-m.t-m.b;
+      const X=x=>m.l+(x-xMin)/(xMax-xMin)*pw;
+      const Y=y=>m.t+(yMax-y)/(yMax-yMin)*ph;
+      let result='';
+      for(const y of yTicks){const yy=Y(y);result+=`<line x1="${m.l}" y1="${yy}" x2="${W-m.r}" y2="${yy}" stroke="#e2e9f0" stroke-width="1"/><text x="${m.l-10}" y="${yy+4}" text-anchor="end" font-size="12" fill="#65758a">${escapeXML(typeof yLabel.format==='function'?yLabel.format(y):String(y))}</text>`;}
+      for(const x of xTicks){const xx=X(x);result+=`<line x1="${xx}" y1="${m.t}" x2="${xx}" y2="${H-m.b}" stroke="#edf0f5" stroke-width="1"/><text x="${xx}" y="${H-m.b+22}" text-anchor="middle" font-size="12" fill="#65758a">${escapeXML(String(x))}</text>`;}
+      result+=`<path d="M${m.l},${m.t}V${H-m.b}H${W-m.r}" fill="none" stroke="#6d7b8c" stroke-width="1.5"/><text x="${m.l+pw/2}" y="${H-9}" text-anchor="middle" font-size="13" fill="#485d75">${escapeXML(xLabel)}</text><text x="18" y="${H/2}" transform="rotate(-90 18 ${H/2})" text-anchor="middle" font-size="13" fill="#485d75">${escapeXML(yLabel.title)}</text>`;
+      const clipId=`${svgId}-clipping`;
+      result+=`<defs><clipPath id="${clipId}"><rect x="${m.l}" y="${m.t}" width="${pw}" height="${ph}"/></clipPath></defs><g clip-path="url(#${clipId})">`;
+      for(const curve of curves){const points=[];for(let i=0;i<=240;i++){const x=xMin+(xMax-xMin)*i/240; const v=curve.fn(x); if(Number.isFinite(v)){points.push(`${X(x).toFixed(2)},${Y(v).toFixed(2)}`);} }
+        result+=`<polyline points="${points.join(' ')}" fill="none" stroke="${curve.color}" stroke-width="${curve.width||3.4}" stroke-linecap="round" stroke-linejoin="round" ${curve.dashed?'stroke-dasharray="9 7"':''}/>`;
+      }result+='</g>';
+      svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML=result; svg.setAttribute('aria-label',caption);
+    }
+    function escapeXML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));}
+    function renderLinear(){
+      const a=Number($('a-slider').value),b=Number($('b-slider').value),family=$('function-type').value;
+      $('a-value').textContent=fmt(a,2);$('b-value').textContent=fmt(b,2);
+      const quadratic=family==='quadratic';const f=x=>a*(quadratic?x*x:x)+b;
+      const aStr=fmt(a,2),bStr=b>=0?`+ ${fmt(b,2)}`:`− ${fmt(-b,2)}`;
+      $('linear-formula').textContent=`y = ${aStr}${quadratic?'x²':'x'} ${bStr}`;
+      $('linear-y0').textContent=fmt(f(0));$('linear-y2').textContent=fmt(f(2));
+      $('linear-kind').textContent=quadratic?'Quadratic':'Linear';
+      const range=quadratic?40:12;
+      svgLineChart('linear-plot',{xMin:-4,xMax:4,yMin:-range,yMax:range,xTicks:[-4,-2,0,2,4],yTicks:quadratic?[-40,-20,0,20,40]:[-12,-6,0,6,12],xLabel:'Input x (arbitrary units)',yLabel:{title:'Output y',format:x=>x},curves:[{fn:f,color:'#2b7cbf'}],caption:`Graph of y = ${a} ${quadratic?'times x squared':'times x'} plus ${b}, from x equals minus four to four.`});
+      $('linear-insight').innerHTML=quadratic?'A <b>quadratic</b> relation has a curved graph when a ≠ 0. Changing the sign of a flips the direction of the curve.':'A <b>linear</b> relation has constant slope a. The intercept b gives the value at x = 0.';
+    }
+    function niceMax(x){if(x<=0)return 1;const k=Math.pow(10,Math.floor(Math.log10(x)));const n=x/k;return (n<=1?1:n<=2?2:n<=5?5:10)*k;}
+    function renderGrowth(){
+      const n0=Number($('n0-slider').value),r=Number($('r-slider').value),log=$('log-scale').checked;
+      $('n0-value').textContent=String(n0);$('r-value').textContent=`${r>=0?'+':''}${fmt(r)}`;
+      const f=t=>n0*Math.exp(r*t),ref=t=>100*Math.exp(.2*t);
+      const vals=[f(0),f(10),ref(0),ref(10)];let yMin,yMax,yTicks;
+      const toY=log?x=>Math.log10(x):x=>x;
+      if(log){yMin=Math.floor(Math.log10(Math.min(...vals))*.95*10)/10-.05; yMax=Math.ceil(Math.log10(Math.max(...vals))*10)/10+.10; const st=(yMax-yMin)/4;yTicks=Array.from({length:5},(_,i)=>yMin+i*st);}
+      else{ yMin=0;yMax=niceMax(Math.max(...vals)*1.10);yTicks=Array.from({length:5},(_,i)=>yMax*i/4); }
+      svgLineChart('growth-plot',{xMin:0,xMax:10,yMin,yMax,xTicks:[0,2,4,6,8,10],yTicks,xLabel:'Time (days)',yLabel:{title:log?'log₁₀(population)':'Predicted cells N(t)',format:y=>log?fmt(y,1):Number(y).toLocaleString('en-US',{maximumFractionDigits:0})},curves:[{fn:t=>toY(ref(t)),color:'#a8becd',dashed:true,width:3},{fn:t=>toY(f(t)),color:'#bf8027',width:4}],caption:`Exponential population versus time, initial population ${n0}, rate ${r} per day, ${log?'logarithmic':'linear'} vertical scale. The vertical axis rescales to keep both curves visible.`});
+      $('growth-axis-note').textContent=log?'Cell population · logarithmic vertical axis':'Cell population · linear vertical axis';
+      $('growth-n10').textContent=Math.round(f(10)).toLocaleString('en-US');
+      $('growth-time').textContent=isAlmostZero(r)?'—':fmt(Math.log(2)/Math.abs(r))+' d';
+      $('growth-state').textContent=isAlmostZero(r)?'Constant':r>0?'Growth':'Decay';
+      const slope=r*f(5);$('growth-derivative').textContent=`${slope>0?'+':''}${fmt(slope,1)} cells/d`;
+      $('growth-insight').innerHTML=isAlmostZero(r)?'When <b>r = 0</b>, the population remains constant because e<sup>0</sup> = 1.':r>0?'For <b>r &gt; 0</b>, the model predicts growth. Its instantaneous rate of change is <b>dN/dt = rN</b>; higher r gives a shorter doubling time.':'For <b>r &lt; 0</b>, the model predicts decay: <b>dN/dt = rN</b> is negative. The reported time is a half-life.';
+    }
+    function heatColor(level){
+      const t=Math.max(0,Math.min(1,level));
+      const lo=[242,235,249],hi=[105,48,145];
+      return `rgb(${lo.map((v,i)=>Math.round(v+(hi[i]-v)*t)).join(',')})`;
+    }
+    const pixelRows=8,pixelCols=12;
+    function spatialIntensity(row,col,c0,ell){const x=10*(col+.5)/pixelCols;const rowMod=0.92+0.08*Math.cos((row+.5)*Math.PI/4);return c0*Math.exp(-x/ell)*rowMod;}
+    function renderSpatial(){
+      const c0=Number($('c0-slider').value),ell=Number($('ell-slider').value);
+      $('c0-value').textContent=String(c0);$('ell-value').textContent=`${fmt(ell,1)} mm`;
+      const f=x=>c0*Math.exp(-x/ell);
+      svgLineChart('spatial-plot',{xMin:0,xMax:10,yMin:0,yMax:105,xTicks:[0,2,4,6,8,10],yTicks:[0,25,50,75,100],xLabel:'Position x (mm)',yLabel:{title:'Concentration (a.u.)',format:x=>x},curves:[{fn:f,color:'#8c5faf',width:4}],caption:`Spatial concentration profile from zero to ten millimeters, c0 ${c0} arbitrary units and characteristic length ${ell} millimeters.`});
+      $('spatial-start').textContent=fmt(f(0),0)+' a.u.';$('spatial-mid').textContent=fmt(f(5),1)+' a.u.';$('spatial-end').textContent=fmt(f(10),2)+' a.u.';
+      const heat=$('heatgrid');heat.innerHTML='';
+      const fragment=document.createDocumentFragment();
+      for(let row=0;row<pixelRows;row++)for(let col=0;col<pixelCols;col++){
+        const el=document.createElement('div');el.className='heatcell';const n=spatialIntensity(row,col,c0,ell);el.style.background=heatColor(n/100);el.title=`Row ${row+1}, column ${col+1}: ${fmt(n,1)} a.u.`;fragment.appendChild(el);
+      }heat.appendChild(fragment);
+      const row=Number($('pixel-row').value)-1,col=Number($('pixel-col').value)-1;
+      $('pixel-value').textContent=`I[${row+1},${col+1}] = ${fmt(spatialIntensity(row,col,c0,ell),1)} a.u.`;
+      $('spatial-insight').innerHTML=`The profile falls to <b>1/e ≈ 37%</b> of its starting value after a distance ℓ = ${fmt(ell,1)} mm. The matrix visualizes sampled, synthetic intensities.`;
+    }
+    function setControls(ids,vals){ids.forEach((id,i)=>$(id).value=vals[i]);}
+    function init(){
+      for(let i=1;i<=pixelRows;i++){const o=document.createElement('option');o.value=String(i);o.textContent=String(i);$('pixel-row').appendChild(o);}
+      for(let i=1;i<=pixelCols;i++){const o=document.createElement('option');o.value=String(i);o.textContent=String(i);$('pixel-col').appendChild(o);}
+      $('pixel-row').value='4';$('pixel-col').value='6';
+      ['a-slider','b-slider','function-type'].forEach(id=>$(id).addEventListener('input',renderLinear));
+      ['n0-slider','r-slider','log-scale'].forEach(id=>$(id).addEventListener('input',renderGrowth));
+      ['c0-slider','ell-slider','pixel-row','pixel-col'].forEach(id=>$(id).addEventListener('input',renderSpatial));
+      $('reset-e1').addEventListener('click',()=>{setControls(['a-slider','b-slider','function-type'],['1','0','linear']);renderLinear();});
+      $('reset-e2').addEventListener('click',()=>{setControls(['n0-slider','r-slider'],['100','.20']);$('log-scale').checked=false;renderGrowth();});
+      $('reset-e3').addEventListener('click',()=>{setControls(['c0-slider','ell-slider'],['100','2']);$('pixel-row').value='4';$('pixel-col').value='6';renderSpatial();});
+      $('reset-progress').addEventListener('click',()=>{if(confirm('Reset all six self-checks in this browser?')){mastered={};store();renderQuizzes();}});
+      $('print-page').addEventListener('click',()=>window.print());
+      renderLinear();renderGrowth();renderSpatial();renderQuizzes();
+    }
+    init();
+  </script>
+</body>
+</html>
